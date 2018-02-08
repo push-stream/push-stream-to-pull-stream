@@ -40,9 +40,10 @@ function Echo () {
       this.paused = this.sink.paused
     },
     end: function (err) {
-      this.sink.end(end)
+      this.sink.end(err)
     },
     resume: function () {
+      this.paused = this.sink.paused
       this.source.resume()
     },
     paused: false,
@@ -57,6 +58,17 @@ function Echo () {
 }
 
 
+test('simple, duplex', function (t) {
+  pull(
+    pull.values([1,2,3]),
+    toDuplex(Echo()),
+    pull.collect(function (err, ary) {
+      t.deepEqual(ary, [1,2,3])
+      t.end()
+    })
+  )
+})
+
 test('simple, source, duplex, sink', function (t) {
   pull(
     toSource(new Values([1,2,3])),
@@ -68,15 +80,7 @@ test('simple, source, duplex, sink', function (t) {
   )
 })
 
-test('simple, duplex', function (t) {
-  pull(
-    pull.values([1,2,3]),
-    toDuplex(Echo()),
-    pull.collect(function (err, ary) {
-      t.deepEqual(ary, [1,2,3])
-      t.end()
-    })
-  )
-})
+
+
 
 
