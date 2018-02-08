@@ -56,7 +56,8 @@ function Echo () {
   }
 }
 
-test('simple, async', function (t) {
+
+test('simple, source, duplex, sink', function (t) {
   pull(
     toSource(new Values([1,2,3])),
     toDuplex(Echo()),
@@ -66,4 +67,16 @@ test('simple, async', function (t) {
     }))
   )
 })
+
+test('simple, duplex', function (t) {
+  pull(
+    pull.values([1,2,3]),
+    toDuplex(Echo()),
+    pull.collect(function (err, ary) {
+      t.deepEqual(ary, [1,2,3])
+      t.end()
+    })
+  )
+})
+
 
