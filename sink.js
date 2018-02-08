@@ -1,5 +1,7 @@
 'use strict'
 
+var looper = require('pull-looper')
+
 module.exports = function (push, cb) {
   var reading = false, ended, read
 
@@ -33,9 +35,10 @@ module.exports = function (push, cb) {
     }
   }
 
-  return function (_read) {
+  return looper(function (_read) {
     read = _read
     if(!push.paused && !ended) more()
-  }
+  })
 }
+
 
