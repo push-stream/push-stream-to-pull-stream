@@ -1,20 +1,20 @@
-var k = 0
+'use strict'
 
 module.exports = function (push, length) {
-  var id = ++k
   var abort_cb, ended, buffer = [], _cb
   length = length || 0
+
   var adapter = {
     paused: false,
     write: function (data) {
-      console.log('WRITE', id, data, !!_cb)
       if(_cb) {
         var cb = _cb; _cb = null; cb(null, data)
       }
       else {
         buffer.push(data)
-        if(buffer.length > length)
-          this.paused = true
+        if(buffer.length > length) {
+          adapter.paused = true
+        }
       }
     },
     end: function (err) {
@@ -23,14 +23,16 @@ module.exports = function (push, length) {
         var cb = _cb; _cb = null; cb(ended)
         if(!_cb) this.paused = true
       }
-    }
+    },
+    source: null
   }
 
   push.pipe(adapter)
 
   return function (abort, cb) {
-    console.log('READ', id, ended, buffer.length, !!_cb)
-    if(_cb && !abort) throw new Error('read twice')
+    if(_cb && !abort) {
+      throw new Error('source:read twice')
+    }
 
     if(abort) {
       push.abort(abort)
@@ -48,18 +50,8 @@ module.exports = function (push, length) {
         push.resume()
       }
     }
-    else if(ended === true)
-      cb(true)
-    else {
-      console.log('remember_cb', id)
-      _cb = cb
-    }
+    else if(ended === true) cb(true)
+    else _cb = cb
   }
 }
-
-
-
-
-
-
 

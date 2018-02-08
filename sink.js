@@ -1,8 +1,9 @@
+'use strict'
 
 module.exports = function (push) {
-  var reading = false
+  var reading = false, ended, read
 
-  push.source = {
+  var adapter = push.source = {
     resume: more,
     paused: false,
     abort: function (err) {
@@ -13,21 +14,21 @@ module.exports = function (push) {
   }
 
   function more () {
-    console.log('RESUME', reading)
     if(reading) return
-    push.source.paused = false
-    reading = true
-    read(null, function next (err, data) {
-      reading = false
-      if(err && err !== true)
-        push.end(err)
-      else if(!push.paused) {
-        if(err) push.end(err)
-        else push.write(data)
+    if(!(adapter.paused = push.paused)) {
+      reading = true
+      read(null, function next (err, data) {
+        reading = false
+        if(err && err !== true) {
+          push.end(ended = err)
+        } else {
+          if(err) push.end(err)
+          else push.write(data)
 
-        if(!push.paused && !err) more()
-      }
-    })
+          if(!push.paused && !err && !reading) more()
+        }
+      })
+    }
   }
 
   return function (_read) {
@@ -36,5 +37,15 @@ module.exports = function (push) {
   }
 
 }
+
+
+
+
+
+
+
+
+
+
 
 
