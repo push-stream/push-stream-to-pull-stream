@@ -4,14 +4,12 @@ var Values = require('push-stream/values')
 var Collect = require('push-stream/collect')
 var pull = require('pull-stream')
 
-var toSource = require('../source')
-var toSink = require('../sink')
-var toDuplex = require('../duplex')
+var toPull = require('../')
 
 test('simple', function (t) {
   pull(
-    toSource(new Values([1,2,3])),
-    toSink(new Collect(function (err, ary) {
+    toPull.source(new Values([1,2,3])),
+    toPull.sink(new Collect(function (err, ary) {
       t.deepEqual(ary, [1,2,3])
       t.end()
     }))
@@ -20,13 +18,13 @@ test('simple', function (t) {
 
 test('simple, async', function (t) {
   pull(
-    toSource(new Values([1,2,3])),
+    toPull.source(new Values([1,2,3])),
     pull.asyncMap(function (data, cb) {
       setImmediate(function () {
         cb(null, data)
       })
     }),
-    toSink(new Collect(function (err, ary) {
+    toPull.sink(new Collect(function (err, ary) {
       t.deepEqual(ary, [1,2,3])
       t.end()
     }))
@@ -61,7 +59,7 @@ function Echo () {
 test('simple, duplex', function (t) {
   pull(
     pull.values([1,2,3]),
-    toDuplex(Echo()),
+    toPull.duplex(Echo()),
     pull.collect(function (err, ary) {
       t.deepEqual(ary, [1,2,3])
       t.end()
@@ -71,15 +69,36 @@ test('simple, duplex', function (t) {
 
 test('simple, source, duplex, sink', function (t) {
   pull(
-    toSource(new Values([1,2,3])),
-    toDuplex(Echo()),
-    toSink(new Collect(function (err, ary) {
+    toPull.source(new Values([1,2,3])),
+    toPull.duplex(Echo()),
+    toPull.sink(new Collect(function (err, ary) {
       t.deepEqual(ary, [1,2,3])
       t.end()
     }))
   )
 })
 
+test('simple, transform', function (t) {
+  pull(
+    pull.values([1,2,3]),
+    toPull.transform(Echo()),
+    pull.collect(function (err, ary) {
+      t.deepEqual(ary, [1,2,3])
+      t.end()
+    })
+  )
+})
+
+test('simple, source, transform, sink', function (t) {
+  pull(
+    toPull.source(new Values([1,2,3])),
+    toPull.transform(Echo()),
+    toPull.sink(new Collect(function (err, ary) {
+      t.deepEqual(ary, [1,2,3])
+      t.end()
+    }))
+  )
+})
 
 
 
