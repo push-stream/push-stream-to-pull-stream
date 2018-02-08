@@ -2,9 +2,9 @@ var duplex = require('./duplex')
 var source = require('./source')
 var sink = require('./sink')
 
-function duplex (push) {
+function duplex (push, cb) {
   return {
-    source: toSource(push),
+    source: toSource(push, cb),
     sink: toSink(push)
   }
 }
@@ -17,11 +17,11 @@ function transform (push) {
   }
 }
 
-exports = module.exports = function (push) {
+exports = module.exports = function (push, cb) {
   if(push.write && push.resume)
-    return duplex(push)
+    return duplex(push, cb)
   else if(push.write && !push.resume)
-    return sink(push)
+    return sink(push, cb)
   else
     return source(push)
 }

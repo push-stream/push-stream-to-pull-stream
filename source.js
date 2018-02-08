@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = function (push, length) {
+module.exports = function (push, length, done) {
   var abort_cb, ended, buffer = [], _cb
   length = length || 0
 
@@ -21,7 +21,9 @@ module.exports = function (push, length) {
       ended = err || true
       if(_cb && (err || !buffer.length)) {
         var cb = _cb; _cb = null; cb(ended)
-        if(!_cb) this.paused = true
+        if(done) {
+          var _done = done; done = null; _done(err)
+        }
       }
     },
     source: null
@@ -36,12 +38,17 @@ module.exports = function (push, length) {
 
     if(abort) {
       push.abort(abort)
-      abort_cb = cb
+//      abort_cb = cb
+      cb(abort)
     }
-    //if it ended with an error, cb immedately, dropping the buffer
-    else if(ended && ended !== true)
+    // if it ended with an error, cb immedately, dropping the buffer
+    else if(ended && ended !== true) {
       cb(ended)
-    //else read the buffer
+      if(done) {
+        var _done = done; done = null; _done(ended)
+      }
+    }
+    // else read the buffer
     else if(buffer.length) {
       var data = buffer.shift()
       cb(null, data)
@@ -50,7 +57,12 @@ module.exports = function (push, length) {
         push.resume()
       }
     }
-    else if(ended === true) cb(true)
+    else if(ended === true) {
+      cb(true)
+      if(done) {
+        var _done = done; done = null; _done()
+      }
+    }
     else _cb = cb
   }
 }
