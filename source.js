@@ -1,5 +1,5 @@
 'use strict'
-
+var looper = require('pull-looper')
 module.exports = function (push, length, done) {
   var abort_cb, ended, buffer = [], _cb
   length = length || 0
@@ -31,7 +31,7 @@ module.exports = function (push, length, done) {
 
   push.pipe(adapter)
 
-  return function (abort, cb) {
+  return looper(function (abort, cb) {
     if(_cb && !abort) {
       throw new Error('source:read twice')
     }
@@ -64,6 +64,6 @@ module.exports = function (push, length, done) {
       }
     }
     else _cb = cb
-  }
+  })
 }
 

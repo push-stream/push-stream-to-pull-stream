@@ -35,10 +35,11 @@ module.exports = function (push, cb) {
     }
   }
 
-  return looper(function (_read) {
-    read = _read
+  return function (_read) {
+    read = looper(_read)
     if(!push.paused && !ended) more()
-  })
+  }
 }
+
 
 
