@@ -4,6 +4,7 @@ var looper = require('pull-looper')
 
 module.exports = function (push, cb) {
   var reading = false, ended, read
+  while(push.source) push = push.source
 
   var adapter = push.source = {
     resume: more,
@@ -40,6 +41,4 @@ module.exports = function (push, cb) {
     if(!push.paused && !ended) more()
   }
 }
-
-
 
