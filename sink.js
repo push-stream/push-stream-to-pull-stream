@@ -28,8 +28,10 @@ module.exports = function (push, cb) {
           push.end(ended = err)
         } else {
           //if the push-stream has already ended, abort the source.
-          if(push.ended && !err)
-            return read(err || push.ended, function () {})
+          if(push.ended) {
+            if(!err) read(push.ended, function () {})
+            return
+          }
           if(err) push.end(err)
           else push.write(data)
           if(push.ended) return read(push.ended, cb || function () {})
@@ -44,4 +46,5 @@ module.exports = function (push, cb) {
     if(!push.paused && !ended) more()
   }
 }
+
 
