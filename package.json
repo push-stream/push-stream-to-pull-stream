@@ -8,7 +8,8 @@
     "url": "git://github.com/dominictarr/push-stream-to-pull-stream.git"
   },
   "dependencies": {
-    "pull-looper": "^1.0.0"
+    "pull-looper": "^1.0.0",
+    "push-stream": "^10.0.3"
   },
   "devDependencies": {
     "pull-stream": "^3.6.1",
