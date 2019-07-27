@@ -2,13 +2,6 @@ var duplex = require('./duplex')
 var source = require('./source')
 var sink = require('./sink')
 
-function duplex (push, cb) {
-  return {
-    source: toSource(push, cb),
-    sink: toSink(push)
-  }
-}
-
 function transform (push) {
   return function (read) {
     var reader = source(push)
