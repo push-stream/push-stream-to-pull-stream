@@ -1,5 +1,5 @@
 var toPullSink = require('../sink')
-var Collect = require('push-stream/collect')
+var Collect = require('push-stream/sinks/collect')
 var pull = require('pull-stream')
 var test = require('tape')
 

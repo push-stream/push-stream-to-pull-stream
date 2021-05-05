@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "pull-looper": "^1.0.0",
-    "push-stream": "^10.0.3"
+    "push-stream": "^11.0.1"
   },
   "devDependencies": {
     "pull-stream": "^3.6.1",
