@@ -1,8 +1,7 @@
-
 var pull = require('pull-stream')
 var toSource = require('../source')
 var test = require('tape')
-var Values = require('push-stream/values')
+var Values = require('push-stream/sources/values')
 
 test('source', function (t) {
 

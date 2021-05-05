@@ -9,11 +9,11 @@
   },
   "dependencies": {
     "pull-looper": "^1.0.0",
-    "push-stream": "^10.0.3"
+    "push-stream": "^11.0.1"
   },
   "devDependencies": {
     "pull-stream": "^3.6.1",
-    "tape": "^4.8.0"
+    "tape": "^5.2.2"
   },
   "scripts": {
     "test": "set -e; for t in test/*.js; do node $t; done"

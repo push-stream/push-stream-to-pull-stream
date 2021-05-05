@@ -1,7 +1,6 @@
-
 var test = require('tape')
-var Values = require('push-stream/values')
-var Collect = require('push-stream/collect')
+var Values = require('push-stream/sources/values')
+var Collect = require('push-stream/sinks/collect')
 var pull = require('pull-stream')
 
 var toPull = require('../')
