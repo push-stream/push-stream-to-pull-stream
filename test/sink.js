@@ -61,11 +61,11 @@ test('pull sink one at a time', function (t) {
 test('pull sink one at a time', function (t) {
 
   var sink = TestSink()
+  var aborts = 0
 
   pull(
     pull.values([1,2,3], function (err) {
-      console.log('on abort')
-      t.end()
+      aborts++
     }),
     toPullSink(sink)
   )
@@ -75,6 +75,8 @@ test('pull sink one at a time', function (t) {
   t.deepEqual(sink.output, [1])
   sink.abort()
   t.ok(sink.ended)
+  t.equal(aborts, 1)
+  t.end()
 
 })
 
